@@ -9,19 +9,15 @@ const tournamentRoutes = require("./routes/tournaments");
 const matchRoutes = require("./routes/matches");
 const { Team } = require("./models/Team");
 
-// Express App
 const app = express();
 
-// Database connect (Atlas)
+// DB connect
 connectDB();
 
 // CORS
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://forchampions.vercel.app", // ⬅ dein Frontend
-    ],
+    origin: ["http://localhost:3000", "https://champs-front.vercel.app"],
     credentials: true,
   })
 );
@@ -41,12 +37,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tournaments", tournamentRoutes);
 app.use("/api/tournaments", matchRoutes);
 
-// Health Check
+// Health
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK", time: new Date().toISOString() });
+  res.status(200).json({ status: "OK" });
 });
 
-// SERVER START
+// ❗❗❗ KEIN STATIC, KEIN FALLBACK ❗❗❗
+
+// Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Backend läuft auf Port ${PORT}`);
@@ -57,13 +55,14 @@ mongoose.connection.once("open", async () => {
   try {
     const collection = mongoose.connection.db.collection("teams");
     const indexes = await collection.indexes();
+
     if (indexes.find((i) => i.name === "name_1")) {
       await collection.dropIndex("name_1");
-      console.log("Alter Index gelöscht.");
     }
+
     await Team.init();
-    console.log("Neuer Compound-Index aktiv.");
+    console.log("Compound Index erstellt");
   } catch (err) {
-    console.error("Index-Migration Fehler:", err);
+    console.error(err);
   }
 });
