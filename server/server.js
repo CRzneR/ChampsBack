@@ -1,6 +1,15 @@
+const path = require("path");
+
+/**
+ * ⬇️ GANZ WICHTIG ⬇️
+ * Lädt die .env aus dem Projekt-Root (eine Ebene über /server)
+ */
+require("dotenv").config({
+  path: path.resolve(__dirname, "../.env"),
+});
+
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const mongoose = require("mongoose");
 
 const connectDB = require("./config/db");
@@ -11,7 +20,13 @@ const { Team } = require("./models/Team");
 
 const app = express();
 
-connectDB();
+/**
+ * ⬇️ DB CONNECT (mit hartem Fehler, falls falsch)
+ */
+connectDB().catch((err) => {
+  console.error(err.message);
+  process.exit(1);
+});
 
 // CORS
 app.use(
@@ -41,8 +56,6 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-// ❗❗❗ KEIN STATIC, KEIN FALLBACK ❗❗❗
-
 // Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, "0.0.0.0", () => {
@@ -60,7 +73,7 @@ mongoose.connection.once("open", async () => {
     }
 
     await Team.init();
-    console.log("Compound Index erstellt");
+    console.log("✅ Compound Index erstellt");
   } catch (err) {
     console.error(err);
   }
