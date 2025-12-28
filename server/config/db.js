@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const uri = process.env.DB_URI;
+    const uri = process.env.MONGODB_URI;
 
     if (!uri) {
       throw new Error("DB_URI fehlt in .env");
