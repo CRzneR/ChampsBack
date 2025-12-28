@@ -2,11 +2,13 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || "", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const uri = process.env.DB_URI;
 
+    if (!uri) {
+      throw new Error("DB_URI fehlt in .env");
+    }
+
+    const conn = await mongoose.connect(uri.trim());
     console.log(`✅ MongoDB verbunden: ${conn.connection.host}`);
   } catch (error) {
     console.error("❌ MongoDB Verbindungsfehler:", error.message);
