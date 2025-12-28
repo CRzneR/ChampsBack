@@ -11,7 +11,6 @@ const { Team } = require("./models/Team");
 
 const app = express();
 
-// DB connect
 connectDB();
 
 // CORS
