@@ -5,16 +5,11 @@ function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Zugriff verweigert. Token erforderlich." });
+    return res.status(401).json({ message: "Zugriff verweigert. Token erforderlich." });
   }
 
   try {
-    const verified = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "cham_app_secret"
-    );
+    const verified = jwt.verify(token, process.env.JWT_SECRET || "mein_geheimes_jwt_secret");
     req.user = verified;
     next();
   } catch (error) {

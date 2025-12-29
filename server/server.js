@@ -20,9 +20,6 @@ const { Team } = require("./models/Team");
 
 const app = express();
 
-/**
- * ⬇️ DB CONNECT (mit hartem Fehler, falls falsch)
- */
 connectDB().catch((err) => {
   console.error(err.message);
   process.exit(1);
