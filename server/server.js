@@ -31,7 +31,7 @@ connectDB().catch((err) => {
 // CORS
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://champs-front.vercel.app"],
+    origin: ["http://localhost:5001", "https://champs-front.vercel.app"],
     credentials: true,
   })
 );
